@@ -31,7 +31,12 @@ class _AddToDoState extends State<AddToDo> {
   }
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(isEdit ? "Edit To Do" : "Add To DO",
+      appBar: AppBar(
+        centerTitle: true,
+        leading: IconButton(onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => ToDoList(),));
+        }, icon: Icon(Icons.arrow_back_ios)),
+        title: Text(isEdit ? "Edit To Do" : "Add To DO",
 
       ),),
     body: Form(
@@ -85,7 +90,8 @@ padding: EdgeInsets.only(right: 50,left: 50),
                       //   const SnackBar(content: Text('Processing Data')),
                       // );
                       isEdit? UpdateData() :  submitData();
-                      Navigator.of(context).pop();                        // Navigator.push(context, MaterialPageRoute(builder: (context) => ToDoList(),));
+                      Navigator. of(context). pop();
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => ToDoList(),));                      // Navigator.push(context, MaterialPageRoute(builder: (context) => ToDoList(),));
 
                     }
                   },

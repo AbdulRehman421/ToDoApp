@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'addlist.dart';
@@ -82,8 +83,14 @@ class _ToDoListState extends State<ToDoList> {
                       title: Text(item['title']),
                       subtitle: Text(item['description']),
                       trailing: PopupMenuButton(
-                        onSelected: (value) {
-                          if (value == 'edit'){
+                        onSelected: (value) async {
+
+                          isDeviceConnected = await InternetConnectionChecker().hasConnection;
+
+                          if(!isDeviceConnected){
+                            showDialogBox();
+                          }
+                          else if (value == 'edit'){
                             navigateToEditPage(item);
                           }else if(value == 'delete'){
                             deleteById(id);
@@ -102,8 +109,16 @@ class _ToDoListState extends State<ToDoList> {
           ),
         ),
         floatingActionButton: FloatingActionButton.extended(onPressed: () async {
+          isDeviceConnected = await InternetConnectionChecker().hasConnection;
+          if(!isDeviceConnected){
+            showDialogBox();
+          }else {
+            Navigator. of(context). pop();
 
-          Navigator.push(context, MaterialPageRoute(builder: (context) => AddToDo()));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => AddToDo()));
+
+          }
+
         }, label: Text("AddTodo")),
       ),
     );
@@ -167,6 +182,8 @@ class _ToDoListState extends State<ToDoList> {
     ScaffoldMessenger.of(context).showSnackBar(snackbar);
   }
 
+  //
+
   showDialogBox() =>showCupertinoDialog(context: context, builder: (BuildContext context) => CupertinoAlertDialog(
     title: Text('No Internet Connection'),
     content: Text('Plese Check Your Internet Connection'),
@@ -175,19 +192,19 @@ class _ToDoListState extends State<ToDoList> {
         // Navigator.pop(context, MaterialPageRoute(builder: (context) => ToDoList(),));
         // Navigator.pop(context);
         // Navigator.of(context);
-        Navigator. of(context). pop();
-        Navigator.push(context, MaterialPageRoute(builder: (context) => ToDoList(),));
-        setState(() {
-          isAlertSet = false;
-
-        });
-        isDeviceConnected = await InternetConnectionChecker().hasConnection;
-        if(!isDeviceConnected){
-          showDialogBox();
-          setState(() {
-            isAlertSet = false;
-          });
-        }
+        Navigator.of(context).pop();
+        // Navigator.push(context, MaterialPageRoute(builder: (context) => ToDoList(),));
+        // setState(() {
+        //   isAlertSet = false;
+        //
+        // });
+        // isDeviceConnected = await InternetConnectionChecker().hasConnection;
+        // if(!isDeviceConnected){
+        //   showDialogBox();
+        //   setState(() {
+        //     isAlertSet = false;
+        //   });
+        // }
       }, child: Text('OK'))
     ],
   ) ,
